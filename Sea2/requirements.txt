@@ -1,2 +1,0 @@
-edge-tts>=7.0,<8
-playsound3>=3.2,<4

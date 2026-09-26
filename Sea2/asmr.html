@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#d89172">
+  <title>שקט על קו המים | ASMR</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      color: #fff8eb;
+      background: #173e45;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    * { box-sizing: border-box; }
+
+    body { min-width: 320px; min-height: 100svh; margin: 0; }
+
+    .scene {
+      position: relative;
+      width: 100%;
+      height: 100svh;
+      min-height: 560px;
+      overflow: hidden;
+      background: #c78371;
+      isolation: isolate;
+    }
+
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    canvas[role="button"] { cursor: pointer; touch-action: manipulation; }
+
+    .shade {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(27, 36, 44, .15), transparent 30%, transparent 58%, rgba(16, 46, 51, .4));
+    }
+
+    .masthead {
+      position: absolute;
+      z-index: 2;
+      top: clamp(24px, 6vh, 60px);
+      right: clamp(24px, 7vw, 96px);
+      left: clamp(24px, 7vw, 96px);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 12px;
+      color: rgba(255, 248, 235, .82);
+      font-size: 11px;
+      letter-spacing: .14em;
+      direction: ltr;
+      text-align: right;
+    }
+
+    h1 {
+      max-width: 700px;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 400;
+      line-height: 1.08;
+      text-wrap: balance;
+      text-shadow: 0 2px 28px rgba(55, 37, 41, .16);
+    }
+
+    .scene-options {
+      display: inline-flex;
+      gap: 4px;
+      margin-top: 18px;
+      padding: 4px;
+      border: 1px solid rgba(255, 248, 235, .35);
+      border-radius: 999px;
+      background: rgba(45, 52, 52, .18);
+      backdrop-filter: blur(10px);
+    }
+
+    .scene-options button {
+      min-height: 34px;
+      padding: 0 14px;
+      border-color: transparent;
+      color: #fff8eb;
+      background: transparent;
+      font-size: 12px;
+    }
+
+    .scene-options button[aria-pressed="true"] {
+      color: #193f43;
+      background: #fff8eb;
+    }
+
+    .scene-options button:hover { transform: none; }
+
+    .duration {
+      padding-top: 8px;
+      color: rgba(255, 248, 235, .85);
+      font-size: 13px;
+      direction: ltr;
+      white-space: nowrap;
+    }
+
+    .controls {
+      position: absolute;
+      z-index: 2;
+      right: clamp(24px, 7vw, 96px);
+      bottom: clamp(28px, 7vh, 68px);
+      left: clamp(24px, 7vw, 96px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    button,
+    .download {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      border: 1px solid rgba(255, 248, 235, .7);
+      border-radius: 999px;
+      color: #193f43;
+      background: #fff8eb;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease;
+    }
+
+    button:hover,
+    .download:hover { transform: translateY(-2px); background: #fff; }
+
+    button:focus-visible,
+    .download:focus-visible,
+    input:focus-visible { outline: 2px solid #ffd58a; outline-offset: 4px; }
+
+    button:disabled { cursor: wait; opacity: .6; }
+
+    button.secondary,
+    .download {
+      color: #fff8eb;
+      border-color: rgba(255, 248, 235, .48);
+      background: rgba(30, 61, 64, .34);
+      backdrop-filter: blur(10px);
+    }
+
+    button.secondary:hover,
+    .download:hover { background: rgba(30, 61, 64, .58); }
+
+    .volume-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255, 248, 235, .92);
+      font-size: 13px;
+    }
+
+    input[type="range"] {
+      width: 112px;
+      accent-color: #fff0d2;
+      cursor: pointer;
+    }
+
+    .status {
+      min-height: 1.5em;
+      margin: 0;
+      color: rgba(255, 248, 235, .9);
+      font-size: 13px;
+      text-align: left;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (max-width: 620px) {
+      .scene { min-height: 600px; }
+      .masthead { top: 28px; gap: 12px; }
+      h1 { max-width: 275px; font-size: 42px; }
+      .eyebrow { font-size: 10px; }
+      .scene-options { margin-top: 14px; }
+      .controls { align-items: flex-start; flex-direction: column; gap: 14px; }
+      .control-group { gap: 9px; }
+      button, .download { min-height: 44px; padding: 0 15px; font-size: 13px; }
+      .volume-control { font-size: 12px; }
+      input[type="range"] { width: 90px; }
+      .status { text-align: right; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="scene">
+    <canvas id="film" role="img" tabindex="-1" aria-label="סצנת ASMR מונפשת"></canvas>
+    <div class="shade" aria-hidden="true"></div>
+    <header class="masthead">
+      <div>
+        <span class="eyebrow" id="eyebrow">ASMR / SEA AT DUSK</span>
+        <h1 id="scene-title">שקט על קו המים</h1>
+        <div class="scene-options" role="group" aria-label="בחירת סרטון">
+          <button class="scene-option" type="button" data-scene="sea" aria-pressed="true">גלי ים</button>
+          <button class="scene-option" type="button" data-scene="slime" aria-pressed="false">סקווישי וסליים</button>
+          <button class="scene-option" type="button" data-scene="dumpling" aria-pressed="false">דמפלינג</button>
+        </div>
+      </div>
+      <span class="duration" id="duration">00:24</span>
+    </header>
+    <section class="controls" aria-label="בקרי הסרטון">
+      <div class="control-group">
+        <button id="start">התחלה והקלטת הסרטון</button>
+        <button class="secondary" id="stop" hidden>עצירה ושמירה</button>
+        <a class="download" id="download" hidden download="sea-asmr.webm">הורדת הסרטון</a>
+        <label class="volume-control" for="volume">
+          עוצמה
+          <input id="volume" type="range" min="0" max="1" step="0.01" value="0.45">
+        </label>
+      </div>
+      <p class="status" id="status" role="status" aria-live="polite">מוכן להקלטה</p>
+    </section>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#film");
+    const context = canvas.getContext("2d");
+    const startButton = document.querySelector("#start");
+    const stopButton = document.querySelector("#stop");
+    const downloadLink = document.querySelector("#download");
+    const volumeSlider = document.querySelector("#volume");
+    const statusText = document.querySelector("#status");
+    const durationText = document.querySelector("#duration");
+    const sceneTitle = document.querySelector("#scene-title");
+    const eyebrow = document.querySelector("#eyebrow");
+    const sceneOptions = [...document.querySelectorAll(".scene-option")];
+    const clipLength = 24;
+    let sceneMode = "sea";
+    let squeezePulse = 0;
+    let sceneWidth = 0;
+    let sceneHeight = 0;
+    let pixelRatio = 1;
+    let audioContext;
+    let masterGain;
+    let audioDestination;
+    let recorder;
+    let canvasStream;
+    let recordingStream;
+    let chunks = [];
+    let recording = false;
+    let recordingStartedAt = 0;
+    let countdownTimer;
+    let tapTimer;
+    let noiseSource;
+    let swellOscillator;
+    let noiseBuffer;
+    let feedbackTimer;
+
+    function resizeCanvas() {
+      const bounds = canvas.getBoundingClientRect();
+      pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      sceneWidth = bounds.width;
+      sceneHeight = bounds.height;
+      canvas.width = Math.round(sceneWidth * pixelRatio);
+      canvas.height = Math.round(sceneHeight * pixelRatio);
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    }
+
+    function drawScene(time) {
+      if (sceneMode === "slime") {
+        drawSlimeScene(time);
+        return;
+      }
+      if (sceneMode === "dumpling") {
+        drawDumplingScene(time);
+        return;
+      }
+
+      const width = sceneWidth;
+      const height = sceneHeight;
+      const horizon = height * .55;
+      const seconds = time / 1000;
+      const sky = context.createLinearGradient(0, 0, 0, horizon + 30);
+      sky.addColorStop(0, "#bd7775");
+      sky.addColorStop(.58, "#e99b79");
+      sky.addColorStop(1, "#f4c28c");
+      context.fillStyle = sky;
+      context.fillRect(0, 0, width, height);
+
+      const sunX = width * .72;
+      const sunY = horizon * .67;
+      const sunRadius = Math.min(width, height) * .105;
+      const glow = context.createRadialGradient(sunX, sunY, sunRadius * .25, sunX, sunY, sunRadius * 3.7);
+      glow.addColorStop(0, "rgba(255, 224, 171, .52)");
+      glow.addColorStop(1, "rgba(255, 224, 171, 0)");
+      context.fillStyle = glow;
+      context.fillRect(0, 0, width, horizon + 100);
+
+      context.beginPath();
+      context.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
+      context.fillStyle = "#ffe1ad";
+      context.fill();
+
+      context.fillStyle = "#8d6c68";
+      context.beginPath();
+      context.moveTo(0, horizon + 3);
+      context.bezierCurveTo(width * .16, horizon - 22, width * .22, horizon + 9, width * .39, horizon + 3);
+      context.bezierCurveTo(width * .52, horizon - 4, width * .61, horizon + 3, width * .7, horizon + 2);
+      context.lineTo(width * .7, height);
+      context.lineTo(0, height);
+      context.closePath();
+      context.fill();
+
+      const water = context.createLinearGradient(0, horizon, 0, height);
+      water.addColorStop(0, "#679b91");
+      water.addColorStop(.36, "#377c79");
+      water.addColorStop(1, "#194d58");
+      context.fillStyle = water;
+      context.fillRect(0, horizon, width, height - horizon);
+
+      for (let layer = 0; layer < 11; layer++) {
+        const yBase = horizon + 12 + layer * ((height - horizon) / 12);
+        const amplitude = 2 + layer * .32;
+        context.beginPath();
+        for (let x = 0; x <= width + 6; x += 6) {
+          const y = yBase + Math.sin(x * .013 + seconds * (.38 + layer * .012) + layer) * amplitude;
+          if (x === 0) context.moveTo(x, y);
+          else context.lineTo(x, y);
+        }
+        context.strokeStyle = `rgba(224, 230, 193, ${.14 - layer * .006})`;
+        context.lineWidth = 1;
+        context.stroke();
+      }
+
+      for (let index = 0; index < 100; index++) {
+        const progress = ((index * 37.7 + seconds * (10 + index % 7) * 2) % 1000) / 1000;
+        const y = horizon + 15 + progress * (height - horizon - 22);
+        const spread = 9 + progress * width * .19;
+        const drift = Math.sin(seconds * .22 + index * 1.7) * (4 + progress * 14);
+        const x = sunX + drift + Math.sin(index * 3.1) * spread;
+        const shimmer = .15 + .36 * (.5 + .5 * Math.sin(seconds * 1.3 + index * 2.1));
+        const length = 3 + (index % 5) * 1.5;
+        context.fillStyle = `rgba(255, 224, 171, ${shimmer * (1 - progress * .48)})`;
+        context.fillRect(x, y, length, 1.2);
+      }
+
+      const vignette = context.createRadialGradient(width * .5, height * .46, height * .2, width * .5, height * .46, height * .85);
+      vignette.addColorStop(0, "rgba(28, 38, 42, 0)");
+      vignette.addColorStop(1, "rgba(28, 38, 42, .28)");
+      context.fillStyle = vignette;
+      context.fillRect(0, 0, width, height);
+
+      context.save();
+      context.direction = "rtl";
+      context.textAlign = "center";
+      context.fillStyle = "rgba(255, 248, 235, .9)";
+      context.shadowColor = "rgba(53, 37, 41, .18)";
+      context.shadowBlur = 24;
+      context.font = `400 ${Math.max(26, Math.min(42, width * .036))}px Georgia, serif`;
+      context.fillText("תני לגלים לקחת את היום", width / 2, height * .8);
+      context.restore();
+    }
+
+    function drawSlimeScene(time) {
+      const width = sceneWidth;
+      const height = sceneHeight;
+      const seconds = time / 1000;
+      const press = Math.min(1, .35 + .25 * (.5 + .5 * Math.sin(seconds * .92)) + squeezePulse * .55);
+      const wall = context.createLinearGradient(0, 0, 0, height * .66);
+      wall.addColorStop(0, "#d98d82");
+      wall.addColorStop(.58, "#efb28c");
+      wall.addColorStop(1, "#f8d5a3");
+      context.fillStyle = wall;
+      context.fillRect(0, 0, width, height);
+
+      const glow = context.createRadialGradient(width * .5, height * .45, 4, width * .5, height * .45, width * .58);
+      glow.addColorStop(0, "rgba(255, 239, 198, .38)");
+      glow.addColorStop(1, "rgba(255, 239, 198, 0)");
+      context.fillStyle = glow;
+      context.fillRect(0, 0, width, height * .7);
+
+      const tabletopY = height * .65;
+      const table = context.createLinearGradient(0, tabletopY, 0, height);
+      table.addColorStop(0, "#bf806d");
+      table.addColorStop(.13, "#d89b7b");
+      table.addColorStop(1, "#a9655d");
+      context.fillStyle = table;
+      context.fillRect(0, tabletopY, width, height - tabletopY);
+      context.fillStyle = "rgba(255, 237, 192, .55)";
+      context.fillRect(0, tabletopY, width, 2);
+
+      context.save();
+      context.direction = "rtl";
+      context.textAlign = "center";
+      context.fillStyle = "rgba(255, 248, 235, .92)";
+      context.shadowColor = "rgba(88, 47, 47, .16)";
+      context.shadowBlur = 20;
+      context.font = `400 ${Math.max(22, Math.min(34, width * .03))}px Georgia, serif`;
+      context.fillText("לוחצים • מותחים • מקפלים", width / 2, height * .28);
+      context.restore();
+
+      const centerX = width * .5;
+      const baseY = height * .84;
+      const blobWidth = Math.min(width * .34, 430) * (1 + press * .13);
+      const blobHeight = height * (.16 - press * .035);
+      const topY = baseY - blobHeight;
+
+      context.beginPath();
+      context.ellipse(centerX, baseY + 8, blobWidth * .62, height * .025, 0, 0, Math.PI * 2);
+      context.fillStyle = "rgba(68, 51, 48, .24)";
+      context.fill();
+
+      const slime = context.createLinearGradient(centerX, topY, centerX, baseY);
+      slime.addColorStop(0, "#c6efad");
+      slime.addColorStop(.32, "#83d5a5");
+      slime.addColorStop(1, "#42a982");
+      context.beginPath();
+      context.moveTo(centerX - blobWidth * .52, baseY);
+      context.bezierCurveTo(centerX - blobWidth * .65, baseY - blobHeight * .25, centerX - blobWidth * .42, topY + blobHeight * .02, centerX, topY + blobHeight * .04);
+      context.bezierCurveTo(centerX + blobWidth * .43, topY - blobHeight * .06, centerX + blobWidth * .65, baseY - blobHeight * .22, centerX + blobWidth * .52, baseY);
+      context.closePath();
+      context.fillStyle = slime;
+      context.shadowColor = "rgba(50, 105, 79, .25)";
+      context.shadowBlur = 24;
+      context.fill();
+      context.shadowBlur = 0;
+      context.beginPath();
+      context.ellipse(centerX - blobWidth * .19, topY + blobHeight * .32, blobWidth * .12, blobHeight * .1, -.4, 0, Math.PI * 2);
+      context.fillStyle = "rgba(239, 255, 217, .52)";
+      context.fill();
+
+      for (const side of [-1, 1]) drawSlimeHand(side, seconds, press, centerX, width, height);
+
+      for (let index = 0; index < 7; index++) {
+        const x = centerX - blobWidth * .36 + index * blobWidth * .12;
+        const y = topY + blobHeight * (.27 + .15 * Math.sin(seconds * 1.3 + index));
+        context.beginPath();
+        context.arc(x, y, 2 + index % 3, 0, Math.PI * 2);
+        context.fillStyle = "rgba(236, 255, 220, .55)";
+        context.fill();
+      }
+    }
+
+    function drawDumplingScene(time) {
+      const width = sceneWidth;
+      const height = sceneHeight;
+      const seconds = time / 1000;
+      const press = Math.min(1, .35 + .2 * (.5 + .5 * Math.sin(seconds * .72)) + squeezePulse * .65);
+      const wall = context.createLinearGradient(0, 0, 0, height * .65);
+      wall.addColorStop(0, "#d58e80");
+      wall.addColorStop(.62, "#f0b991");
+      wall.addColorStop(1, "#f8dbb3");
+      context.fillStyle = wall;
+      context.fillRect(0, 0, width, height);
+
+      const tabletopY = height * .64;
+      const table = context.createLinearGradient(0, tabletopY, 0, height);
+      table.addColorStop(0, "#bd806b");
+      table.addColorStop(1, "#8e5e58");
+      context.fillStyle = table;
+      context.fillRect(0, tabletopY, width, height - tabletopY);
+
+      context.save();
+      context.direction = "rtl";
+      context.textAlign = "center";
+      context.fillStyle = "rgba(255, 248, 235, .92)";
+      context.font = `400 ${Math.max(22, Math.min(34, width * .03))}px Georgia, serif`;
+      context.fillText("לוחצים • משחררים • שוב", width / 2, height * .28);
+      context.restore();
+
+      const centerX = width * .5;
+      const baseY = height * .82;
+      const dumplingWidth = Math.min(width * .31, 390) * (1 + press * .16);
+      const dumplingHeight = height * (.27 - press * .055);
+      const topY = baseY - dumplingHeight;
+
+      context.beginPath();
+      context.ellipse(centerX, baseY + 12, dumplingWidth * .72, height * .055, 0, 0, Math.PI * 2);
+      context.fillStyle = "rgba(65, 40, 34, .23)";
+      context.fill();
+      context.beginPath();
+      context.ellipse(centerX, baseY + 4, dumplingWidth * .76, height * .06, 0, 0, Math.PI * 2);
+      context.fillStyle = "#e5c9a1";
+      context.fill();
+
+      const dough = context.createLinearGradient(centerX - dumplingWidth * .4, topY, centerX + dumplingWidth * .3, baseY);
+      dough.addColorStop(0, "#fff2d7");
+      dough.addColorStop(.55, "#efd1a8");
+      dough.addColorStop(1, "#d5a57e");
+      context.beginPath();
+      context.moveTo(centerX - dumplingWidth * .52, baseY);
+      context.bezierCurveTo(centerX - dumplingWidth * .62, baseY - dumplingHeight * .24, centerX - dumplingWidth * .42, topY + dumplingHeight * .06, centerX, topY);
+      context.bezierCurveTo(centerX + dumplingWidth * .42, topY + dumplingHeight * .06, centerX + dumplingWidth * .62, baseY - dumplingHeight * .24, centerX + dumplingWidth * .52, baseY);
+      context.closePath();
+      context.fillStyle = dough;
+      context.shadowColor = "rgba(83, 52, 42, .24)";
+      context.shadowBlur = 24;
+      context.fill();
+      context.shadowBlur = 0;
+
+      context.strokeStyle = "rgba(174, 127, 91, .58)";
+      context.lineWidth = Math.max(2, width * .0025);
+      for (let fold = -3; fold <= 3; fold++) {
+        context.beginPath();
+        context.moveTo(centerX, topY + 7);
+        context.quadraticCurveTo(centerX + fold * dumplingWidth * .1, topY + dumplingHeight * .26, centerX + fold * dumplingWidth * .14, topY + dumplingHeight * .58);
+        context.stroke();
+      }
+
+      context.beginPath();
+      context.ellipse(centerX - dumplingWidth * .2, topY + dumplingHeight * .2, dumplingWidth * .09, dumplingHeight * .07, -.4, 0, Math.PI * 2);
+      context.fillStyle = "rgba(255, 255, 244, .56)";
+      context.fill();
+      for (const side of [-1, 1]) drawSlimeHand(side, seconds, press, centerX, width, height);
+    }
+
+    function drawSlimeHand(side, seconds, press, centerX, width, height) {
+      const alternatingPress = .5 + .5 * Math.sin(seconds * 1.15 + (side === 1 ? 0 : Math.PI));
+      const handX = centerX + side * width * .2;
+      const palmY = height * (.485 + alternatingPress * .035);
+      const skin = context.createLinearGradient(handX - 38, palmY - 100, handX + 30, palmY + 100);
+      skin.addColorStop(0, "#ffd2a2");
+      skin.addColorStop(1, "#db9278");
+
+      context.save();
+      context.translate(handX, palmY);
+      context.scale(side === 1 ? -1 : 1, 1);
+      context.fillStyle = skin;
+      context.strokeStyle = "#db9278";
+      context.lineCap = "round";
+      context.lineJoin = "round";
+      context.beginPath();
+      context.roundRect(-18, -126, 36, 103, 17);
+      context.fill();
+      context.beginPath();
+      context.ellipse(0, -29, 37, 37, 0, 0, Math.PI * 2);
+      context.fill();
+
+      const fingerReach = height * (.065 + alternatingPress * .065 + press * .025);
+      [-25, -9, 8, 24].forEach((startX, index) => {
+        const endY = 6 + fingerReach - Math.abs(index - 1.5) * 4;
+        context.beginPath();
+        context.moveTo(startX, -20);
+        context.bezierCurveTo(startX - 2, -2, startX + 2, endY - 12, startX + 1, endY);
+        context.lineWidth = index === 0 || index === 3 ? 12 : 14;
+        context.stroke();
+        context.beginPath();
+        context.ellipse(startX + 1, endY - 5, 3, 5, 0, 0, Math.PI * 2);
+        context.fillStyle = "rgba(255, 240, 217, .8)";
+        context.fill();
+        context.fillStyle = skin;
+      });
+
+      context.beginPath();
+      context.moveTo(-31, -39);
+      context.quadraticCurveTo(-59, -28, -54, -5);
+      context.quadraticCurveTo(-50, 7, -39, -2);
+      context.strokeStyle = "#e9aa88";
+      context.lineWidth = 12;
+      context.stroke();
+      context.restore();
+    }
+
+    function animate(time) {
+      squeezePulse = Math.max(0, squeezePulse - .035);
+      drawScene(time);
+      requestAnimationFrame(animate);
+    }
+
+    function createNoiseBuffer(audio) {
+      const length = audio.sampleRate * 5;
+      const buffer = audio.createBuffer(1, length, audio.sampleRate);
+      const samples = buffer.getChannelData(0);
+      let filtered = 0;
+      for (let index = 0; index < length; index++) {
+        filtered = filtered * .97 + (Math.random() * 2 - 1) * .03;
+        samples[index] = filtered * 4;
+      }
+      return buffer;
+    }
+
+    async function ensureAudio() {
+      if (!audioContext || audioContext.state === "closed") {
+        audioContext = new AudioContext();
+        masterGain = audioContext.createGain();
+        masterGain.gain.value = Number(volumeSlider.value) * .55;
+        masterGain.connect(audioContext.destination);
+        audioDestination = audioContext.createMediaStreamDestination();
+        masterGain.connect(audioDestination);
+        noiseBuffer = createNoiseBuffer(audioContext);
+      }
+      if (audioContext.state === "suspended") await audioContext.resume();
+    }
+
+    async function playSquishSound(mode) {
+      await ensureAudio();
+      const now = audioContext.currentTime;
+      const slime = mode === "slime";
+      const texture = audioContext.createBufferSource();
+      const filter = audioContext.createBiquadFilter();
+      const textureGain = audioContext.createGain();
+      texture.buffer = noiseBuffer;
+      texture.playbackRate.value = slime ? .9 : .72;
+      filter.type = "lowpass";
+      filter.frequency.value = slime ? 1350 : 780;
+      textureGain.gain.setValueAtTime(.0001, now);
+      textureGain.gain.exponentialRampToValueAtTime(slime ? .12 : .1, now + .025);
+      textureGain.gain.exponentialRampToValueAtTime(.0001, now + .28);
+      texture.connect(filter).connect(textureGain).connect(masterGain);
+      texture.start(now, Math.random() * 3, .3);
+
+      const body = audioContext.createOscillator();
+      const bodyGain = audioContext.createGain();
+      body.type = slime ? "triangle" : "sine";
+      body.frequency.setValueAtTime(slime ? 205 : 260, now);
+      body.frequency.exponentialRampToValueAtTime(slime ? 105 : 125, now + .19);
+      bodyGain.gain.setValueAtTime(.0001, now);
+      bodyGain.gain.exponentialRampToValueAtTime(slime ? .045 : .04, now + .02);
+      bodyGain.gain.exponentialRampToValueAtTime(.0001, now + .22);
+      body.connect(bodyGain).connect(masterGain);
+      body.start(now);
+      body.stop(now + .23);
+    }
+
+    function createSoftTap() {
+      if (!recording || !audioContext) return;
+      const now = audioContext.currentTime;
+      const oscillator = audioContext.createOscillator();
+      const envelope = audioContext.createGain();
+      const pan = audioContext.createStereoPanner();
+      const softObject = sceneMode !== "sea";
+      oscillator.type = sceneMode === "slime" ? "triangle" : "sine";
+      oscillator.frequency.setValueAtTime(softObject ? (sceneMode === "slime" ? 190 : 245) + Math.random() * 70 : 680 + Math.random() * 720, now);
+      if (softObject) oscillator.frequency.exponentialRampToValueAtTime(95 + Math.random() * 30, now + .14);
+      pan.pan.value = Math.random() * 1.4 - .7;
+      envelope.gain.setValueAtTime(.0001, now);
+      envelope.gain.exponentialRampToValueAtTime(softObject ? .018 : .012, now + .012);
+      envelope.gain.exponentialRampToValueAtTime(.0001, now + (softObject ? .23 : .16));
+      oscillator.connect(envelope).connect(pan).connect(masterGain);
+      oscillator.start(now);
+      oscillator.stop(now + (softObject ? .24 : .17));
+      tapTimer = window.setTimeout(createSoftTap, softObject ? 650 + Math.random() * 800 : 300 + Math.random() * 650);
+    }
+
+    async function startAudio() {
+      await ensureAudio();
+
+      const filter = audioContext.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.value = sceneMode === "sea" ? 850 : sceneMode === "slime" ? 520 : 680;
+      filter.Q.value = .45;
+      const seaGain = audioContext.createGain();
+      seaGain.gain.value = sceneMode === "sea" ? .16 : .13;
+      noiseSource = audioContext.createBufferSource();
+      noiseSource.buffer = noiseBuffer;
+      noiseSource.loop = true;
+      noiseSource.connect(filter).connect(seaGain).connect(masterGain);
+      noiseSource.start();
+
+      swellOscillator = audioContext.createOscillator();
+      const swellDepth = audioContext.createGain();
+      swellOscillator.frequency.value = sceneMode === "sea" ? .085 : .12;
+      swellDepth.gain.value = sceneMode === "sea" ? .055 : .07;
+      swellOscillator.connect(swellDepth).connect(seaGain.gain);
+      swellOscillator.start();
+      recording = true;
+      createSoftTap();
+    }
+
+    function formatTime(seconds) {
+      const safeSeconds = Math.max(0, seconds);
+      return `00:${String(safeSeconds).padStart(2, "0")}`;
+    }
+
+    function stopRecording() {
+      if (recorder && recorder.state === "recording") recorder.stop();
+    }
+
+    function selectScene(mode) {
+      if (recording) return;
+      sceneMode = mode;
+      const scenes = {
+        sea: { title: "שקט על קו המים", eyebrow: "ASMR / SEA AT DUSK", label: "שקיעה מצוירת מעל ים רגוע", filename: "sea-asmr.webm" },
+        slime: { title: "סקווישי וסליים", eyebrow: "ASMR / SOFT SLIME", label: "לחצי על הסליים כדי למעוך ולשמוע סקוויש", filename: "slime-asmr.webm" },
+        dumpling: { title: "דמפלינג סקווישי", eyebrow: "ASMR / SQUISHY DUMPLING", label: "לחצי על הדמפלינג כדי למעוך ולשמוע סקוויש", filename: "dumpling-asmr.webm" }
+      };
+      const scene = scenes[mode];
+      sceneTitle.textContent = scene.title;
+      eyebrow.textContent = scene.eyebrow;
+      canvas.setAttribute("aria-label", scene.label);
+      canvas.setAttribute("role", mode === "sea" ? "img" : "button");
+      canvas.tabIndex = mode === "sea" ? -1 : 0;
+      document.title = `${scene.title} | ASMR`;
+      sceneOptions.forEach(option => option.setAttribute("aria-pressed", String(option.dataset.scene === mode)));
+      downloadLink.download = scene.filename;
+      if (downloadLink.href.startsWith("blob:")) URL.revokeObjectURL(downloadLink.href);
+      downloadLink.removeAttribute("href");
+      downloadLink.hidden = true;
+      statusText.textContent = "מוכן להקלטה";
+    }
+
+    function triggerSqueeze() {
+      if (sceneMode === "sea") return;
+      squeezePulse = 1;
+      const effect = sceneMode === "slime" ? "סקוויש סליים" : "סקוויש דמפלינג";
+      statusText.textContent = recording ? `מקליט · ${effect}` : effect;
+      window.clearTimeout(feedbackTimer);
+      feedbackTimer = window.setTimeout(() => {
+        if (!recording) statusText.textContent = "מוכן להקלטה";
+        else statusText.textContent = sceneMode === "slime" ? "מקליט סקווישים עדינים" : sceneMode === "dumpling" ? "מקליט סקווישי דמפלינג" : "מקליט גלים וצליל ים";
+      }, 900);
+      playSquishSound(sceneMode).catch(() => {
+        statusText.textContent = "הדפדפן לא הצליח להפעיל צליל";
+      });
+    }
+
+    async function beginRecording() {
+      startButton.disabled = true;
+      sceneOptions.forEach(option => option.disabled = true);
+      statusText.textContent = "מתחיל להקליט…";
+      try {
+        await startAudio();
+        canvasStream = canvas.captureStream(30);
+        recordingStream = new MediaStream([
+          ...canvasStream.getVideoTracks(),
+          ...audioDestination.stream.getAudioTracks()
+        ]);
+        const types = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"];
+        const mimeType = types.find(type => MediaRecorder.isTypeSupported(type));
+        recorder = new MediaRecorder(recordingStream, mimeType ? { mimeType } : undefined);
+        chunks = [];
+        recorder.ondataavailable = event => {
+          if (event.data.size) chunks.push(event.data);
+        };
+        recorder.onstop = () => {
+          window.clearInterval(countdownTimer);
+          recording = false;
+          window.clearTimeout(tapTimer);
+          recordingStream.getTracks().forEach(track => track.stop());
+          const blob = new Blob(chunks, { type: recorder.mimeType || "video/webm" });
+          downloadLink.href = URL.createObjectURL(blob);
+          downloadLink.hidden = false;
+          stopButton.hidden = true;
+          startButton.hidden = false;
+          startButton.disabled = false;
+          sceneOptions.forEach(option => option.disabled = false);
+          durationText.textContent = "00:24";
+          statusText.textContent = "הסרטון מוכן להורדה";
+          if (noiseSource) noiseSource.stop();
+          if (swellOscillator) swellOscillator.stop();
+          audioContext.close();
+        };
+        recorder.start(500);
+        recordingStartedAt = Date.now();
+        startButton.hidden = true;
+        stopButton.hidden = false;
+        downloadLink.hidden = true;
+        volumeSlider.disabled = false;
+        statusText.textContent = sceneMode === "sea" ? "מקליט גלים וצליל ים" : sceneMode === "slime" ? "מקליט סקווישים עדינים" : "מקליט סקווישי דמפלינג";
+        countdownTimer = window.setInterval(() => {
+          const elapsed = Math.floor((Date.now() - recordingStartedAt) / 1000);
+          const remaining = Math.max(0, clipLength - elapsed);
+          durationText.textContent = formatTime(remaining);
+          if (remaining === 0) stopRecording();
+        }, 250);
+      } catch (error) {
+        recording = false;
+        startButton.disabled = false;
+        sceneOptions.forEach(option => option.disabled = false);
+        statusText.textContent = "ההקלטה לא נתמכה בדפדפן הזה";
+        if (audioContext && audioContext.state !== "closed") audioContext.close();
+      }
+    }
+
+    startButton.addEventListener("click", beginRecording);
+    stopButton.addEventListener("click", stopRecording);
+    sceneOptions.forEach(option => option.addEventListener("click", () => selectScene(option.dataset.scene)));
+    canvas.addEventListener("pointerdown", event => {
+      if (sceneMode === "sea") return;
+      const bounds = canvas.getBoundingClientRect();
+      const x = (event.clientX - bounds.left) / bounds.width;
+      const y = (event.clientY - bounds.top) / bounds.height;
+      const onObject = sceneMode === "slime"
+        ? x > .29 && x < .71 && y > .66 && y < .9
+        : x > .29 && x < .71 && y > .48 && y < .88;
+      if (onObject) triggerSqueeze();
+    });
+    canvas.addEventListener("keydown", event => {
+      if (sceneMode !== "sea" && (event.key === "Enter" || event.key === " ")) {
+        event.preventDefault();
+        triggerSqueeze();
+      }
+    });
+    volumeSlider.addEventListener("input", () => {
+      if (masterGain) masterGain.gain.setTargetAtTime(Number(volumeSlider.value) * .55, audioContext.currentTime, .08);
+    });
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>

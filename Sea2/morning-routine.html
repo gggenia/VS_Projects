@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e8f1ed">
+  <title>שגרת בוקר | סטודיו קטן</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      color: #273d39;
+      background: #e8f1ed;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 12% 0%, rgba(255, 255, 255, .8), transparent 30%),
+        linear-gradient(135deg, #edf3ed, #dcebe4 56%, #e8eee8);
+    }
+
+    button { font: inherit; }
+
+    .page {
+      width: min(1180px, calc(100% - 64px));
+      margin: 0 auto;
+      padding: 35px 0 42px;
+    }
+
+    .masthead {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 26px;
+    }
+
+    .brand { margin: 0; }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 8px;
+      color: #668178;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-align: right;
+    }
+
+    h1 {
+      margin: 0;
+      color: #263e39;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(34px, 5vw, 52px);
+      font-weight: 400;
+      line-height: 1.08;
+    }
+
+    .date-note {
+      padding-bottom: 4px;
+      color: #6b817a;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .studio {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(300px, .72fr);
+      min-height: 640px;
+      background: rgba(255, 255, 255, .43);
+      border: 1px solid rgba(50, 80, 69, .12);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 18px 55px rgba(42, 72, 61, .08);
+    }
+
+    .portrait-panel {
+      position: relative;
+      min-width: 0;
+      min-height: 600px;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(ellipse at 50% 33%, rgba(255, 239, 207, .65), transparent 53%),
+        #dcebe3;
+    }
+
+    .portrait-note {
+      position: absolute;
+      top: 22px;
+      right: 25px;
+      left: 25px;
+      display: flex;
+      justify-content: space-between;
+      color: #628077;
+      font-size: 12px;
+    }
+
+    .portrait {
+      width: min(100%, 470px);
+      max-height: 590px;
+      overflow: visible;
+      filter: drop-shadow(0 12px 18px rgba(55, 75, 64, .12));
+    }
+
+    .makeup-panel {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding: 35px clamp(25px, 4vw, 48px) 28px;
+      border-right: 1px solid rgba(50, 80, 69, .12);
+      background: rgba(251, 252, 248, .72);
+    }
+
+    .panel-kicker {
+      margin: 0 0 10px;
+      color: #bf7462;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    h2 {
+      margin: 0;
+      color: #263e39;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 29px;
+      font-weight: 400;
+      line-height: 1.2;
+    }
+
+    .panel-intro {
+      margin: 9px 0 27px;
+      color: #71827c;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .blemish-count {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 13px 0 17px;
+      border-top: 1px solid rgba(50, 80, 69, .14);
+      border-bottom: 1px solid rgba(50, 80, 69, .14);
+    }
+
+    .count-number {
+      color: #bd655c;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 36px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .count-label { color: #62766f; font-size: 13px; }
+
+    .section-label {
+      margin: 24px 0 8px;
+      color: #778982;
+      font-size: 11px;
+      letter-spacing: .05em;
+    }
+
+    .products {
+      display: grid;
+      gap: 3px;
+    }
+
+    .product {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) 20px;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      min-height: 58px;
+      padding: 7px 9px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      color: inherit;
+      text-align: right;
+      background: transparent;
+      cursor: grab;
+      touch-action: manipulation;
+      transition: background .18s ease, border-color .18s ease;
+    }
+
+    .product:hover { background: #f1f5ef; }
+    .product:active { cursor: grabbing; }
+    .product[aria-pressed="true"] { border-color: #8bab9e; background: #edf5ef; }
+    .product:focus-visible, .face-pimple:focus-visible { outline: 2px solid #497968; outline-offset: 3px; }
+
+    .swatch {
+      position: relative;
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(45, 67, 58, .11);
+      border-radius: 50%;
+      background: var(--swatch);
+    }
+
+    .swatch::after {
+      width: 19px;
+      height: 19px;
+      border: 1px solid rgba(255, 255, 255, .52);
+      border-radius: 50%;
+      background: var(--product-color);
+      content: "";
+    }
+
+    .product-name { color: #324943; font-size: 14px; font-weight: 700; }
+    .product-type { display: block; margin-top: 3px; color: #83928c; font-size: 11px; font-weight: 400; }
+    .drag-mark { color: #95a49d; font-size: 16px; text-align: center; }
+
+    .live-note {
+      min-height: 42px;
+      margin: auto 0 0;
+      padding: 17px 0 13px;
+      color: #4e6b61;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .panel-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(50, 80, 69, .14);
+    }
+
+    .finished-label { color: #7c8b84; font-size: 11px; }
+
+    .reset-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-height: 37px;
+      padding: 0 12px;
+      border: 1px solid #c8d4cd;
+      border-radius: 4px;
+      color: #526961;
+      background: transparent;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .reset-button:hover { color: #273d39; background: #edf3ee; }
+
+    .face-pimple { cursor: pointer; transform-box: fill-box; transform-origin: center; }
+    .face-pimple:hover { filter: brightness(1.08); }
+    .face-pimple.popping { animation: pop .22s ease-in forwards; pointer-events: none; }
+
+    @keyframes pop {
+      60% { opacity: .8; transform: scale(1.35); }
+      100% { opacity: 0; transform: scale(.2); }
+    }
+
+    @media (max-width: 780px) {
+      .page { width: min(100% - 32px, 560px); padding-top: 25px; }
+      .masthead { align-items: flex-start; margin-bottom: 17px; }
+      .studio { grid-template-columns: minmax(0, 1fr); }
+      .portrait-panel { min-height: 0; padding: 53px 15px 12px; }
+      .portrait-note { top: 19px; right: 18px; left: 18px; }
+      .portrait { width: min(100%, 390px); max-height: none; }
+      .makeup-panel { padding: 25px 24px 20px; border-top: 1px solid rgba(50, 80, 69, .12); border-right: 0; }
+      .panel-intro { margin-bottom: 17px; }
+      .section-label { margin-top: 18px; }
+      .products { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+      .product { grid-template-columns: 38px minmax(0, 1fr); gap: 8px; min-height: 58px; padding: 5px; }
+      .swatch { width: 34px; height: 34px; }
+      .swatch::after { width: 17px; height: 17px; }
+      .drag-mark { display: none; }
+      .live-note { min-height: 34px; padding: 14px 0 10px; }
+    }
+
+    @media (max-width: 380px) {
+      .page { width: calc(100% - 24px); }
+      .date-note { font-size: 11px; }
+      .portrait-panel { padding-right: 8px; padding-left: 8px; }
+      .makeup-panel { padding-right: 17px; padding-left: 17px; }
+      .product-name { font-size: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="masthead">
+      <div class="brand">
+        <span class="eyebrow">MORNING CLUB · 08:14</span>
+        <h1>שגרת בוקר</h1>
+      </div>
+      <span class="date-note">יום חדש, צבע חדש</span>
+    </header>
+
+    <section class="studio" aria-label="סטודיו איפור אינטראקטיבי">
+      <div class="portrait-panel">
+        <div class="portrait-note"><span>הבוקר של נועה</span><span>01 / 03</span></div>
+        <svg class="portrait" id="portrait" viewBox="0 0 640 720" role="group" aria-label="הפנים של נועה. לחצי על פצעון להסרה, או הניחי עליה איפור.">
+          <defs>
+            <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#e8af8c" />
+              <stop offset="1" stop-color="#c88168" />
+            </linearGradient>
+            <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#405149" />
+              <stop offset="1" stop-color="#273733" />
+            </linearGradient>
+            <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#df8b72" />
+              <stop offset="1" stop-color="#c86561" />
+            </linearGradient>
+            <radialGradient id="blemish-halo">
+              <stop offset="0" stop-color="#b95755" stop-opacity=".34" />
+              <stop offset=".55" stop-color="#c96e64" stop-opacity=".2" />
+              <stop offset="1" stop-color="#d17d70" stop-opacity="0" />
+            </radialGradient>
+            <radialGradient id="blemish-center" cx=".35" cy=".3">
+              <stop offset="0" stop-color="#f2c09c" />
+              <stop offset=".48" stop-color="#d98270" />
+              <stop offset="1" stop-color="#bd665f" />
+            </radialGradient>
+            <radialGradient id="soft-blush">
+              <stop offset="0" stop-color="#d76f79" stop-opacity=".36" />
+              <stop offset=".48" stop-color="#dd8280" stop-opacity=".25" />
+              <stop offset="1" stop-color="#df8d89" stop-opacity="0" />
+            </radialGradient>
+            <radialGradient id="soft-shadow">
+              <stop offset="0" stop-color="#88758f" stop-opacity=".46" />
+              <stop offset=".58" stop-color="#9c83a1" stop-opacity=".29" />
+              <stop offset="1" stop-color="#b39ab3" stop-opacity="0" />
+            </radialGradient>
+            <radialGradient id="soft-glow">
+              <stop offset="0" stop-color="#fff1c4" stop-opacity=".72" />
+              <stop offset=".5" stop-color="#f3d78c" stop-opacity=".34" />
+              <stop offset="1" stop-color="#efd184" stop-opacity="0" />
+            </radialGradient>
+            <clipPath id="face-clip">
+              <path d="M320 123 C223 123 170 191 172 313 C174 438 238 516 320 523 C402 516 466 438 468 313 C470 191 417 123 320 123Z" />
+            </clipPath>
+          </defs>
+
+          <rect width="640" height="720" rx="28" fill="#dcebe3" />
+          <path d="M91 720 C101 604 186 546 266 539 L374 539 C454 546 539 604 549 720Z" fill="url(#shirt)" />
+          <path d="M263 477 L377 477 L389 579 C369 608 272 608 251 579Z" fill="url(#skin)" />
+          <path d="M162 297 C126 193 170 86 279 67 C395 39 491 112 489 260 C486 374 466 473 415 516 L225 513 C179 472 149 392 162 297Z" fill="url(#hair)" />
+          <path d="M179 324 C157 304 145 324 154 362 C160 386 174 396 187 386Z" fill="#d99779" />
+          <path d="M461 324 C483 304 495 324 486 362 C480 386 466 396 453 386Z" fill="#c9826b" />
+          <path d="M320 123 C223 123 170 191 172 313 C174 438 238 516 320 523 C402 516 466 438 468 313 C470 191 417 123 320 123Z" fill="url(#skin)" />
+
+          <g id="foundation-layer" clip-path="url(#face-clip)"></g>
+
+          <path d="M204 273 C225 254 253 254 276 269" fill="none" stroke="#51413b" stroke-width="8" stroke-linecap="round" />
+          <path d="M364 269 C387 254 415 254 436 273" fill="none" stroke="#51413b" stroke-width="8" stroke-linecap="round" />
+          <path d="M211 305 C228 289 253 289 271 305 C254 324 228 324 211 305Z" fill="#fff5e9" />
+          <path d="M369 305 C387 289 412 289 429 305 C412 324 386 324 369 305Z" fill="#fff5e9" />
+          <ellipse cx="242" cy="307" rx="8" ry="11" fill="#527e75" />
+          <ellipse cx="398" cy="307" rx="8" ry="11" fill="#527e75" />
+          <circle cx="244" cy="304" r="3" fill="#fff8e9" />
+          <circle cx="400" cy="304" r="3" fill="#fff8e9" />
+          <path d="M310 309 C308 342 293 372 306 378 C313 382 324 380 330 375" fill="none" stroke="#aa6b5d" stroke-width="5" stroke-linecap="round" />
+          <path id="natural-lips" d="M276 414 C292 402 307 405 320 412 C333 405 348 402 364 414 C350 438 334 444 320 434 C306 444 290 438 276 414Z" fill="#99585a" />
+          <path d="M211 411 C232 424 249 427 265 420 M375 420 C391 427 408 424 429 411" fill="none" stroke="rgba(171,103,83,.26)" stroke-width="3" stroke-linecap="round" />
+          <circle cx="190" cy="386" r="8" fill="#e1b45e" />
+          <circle cx="450" cy="386" r="8" fill="#e1b45e" />
+
+          <g id="makeup-layer" clip-path="url(#face-clip)"></g>
+          <g id="pimple-layer" clip-path="url(#face-clip)" aria-label="פצעונים ללחיצה"></g>
+
+          <path d="M189 211 C169 132 222 78 296 79 C264 107 247 132 240 171 C227 203 212 215 189 211Z" fill="#35453f" />
+          <path d="M451 220 C474 161 445 95 386 78 C426 119 428 163 420 204Z" fill="#303e39" />
+          <path d="M186 448 C197 502 229 535 264 543 M454 448 C443 502 411 535 376 543" fill="none" stroke="#31413b" stroke-width="22" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <aside class="makeup-panel">
+        <p class="panel-kicker">הפסקה קטנה לעצמך</p>
+        <h2>הצבעים של הבוקר</h2>
+        <p class="panel-intro">בוקר רגוע, בלי למהר. קצת צבע, בדיוק כמו שבא לך.</p>
+
+        <div class="blemish-count" aria-live="polite" aria-atomic="true">
+          <span class="count-number" id="blemish-count">8</span>
+          <span class="count-label" id="count-label">פצעונים קטנים נשארו</span>
+        </div>
+
+        <p class="section-label">על השולחן</p>
+        <div class="products" role="group" aria-label="מוצרי איפור לגרירה או בחירה">
+          <button class="product" type="button" data-product="blush" aria-pressed="false" draggable="true">
+            <span class="swatch" style="--swatch:#f1ddd5;--product-color:#d87979" aria-hidden="true"></span>
+            <span><span class="product-name">סומק</span><span class="product-type">ורוד רך</span></span>
+            <span class="drag-mark" aria-hidden="true">⠿</span>
+          </button>
+          <button class="product" type="button" data-product="shadow" aria-pressed="false" draggable="true">
+            <span class="swatch" style="--swatch:#e4dfed;--product-color:#927c9c" aria-hidden="true"></span>
+            <span><span class="product-name">צללית</span><span class="product-type">לבנדר מעושן</span></span>
+            <span class="drag-mark" aria-hidden="true">⠿</span>
+          </button>
+          <button class="product" type="button" data-product="lipstick" aria-pressed="false" draggable="true">
+            <span class="swatch" style="--swatch:#f3d8d5;--product-color:#c95361" aria-hidden="true"></span>
+            <span><span class="product-name">שפתון</span><span class="product-type">אדום דובדבן</span></span>
+            <span class="drag-mark" aria-hidden="true">⠿</span>
+          </button>
+          <button class="product" type="button" data-product="glow" aria-pressed="false" draggable="true">
+            <span class="swatch" style="--swatch:#f1e8c9;--product-color:#e6bd63" aria-hidden="true"></span>
+            <span><span class="product-name">היילייטר</span><span class="product-type">אור עדין</span></span>
+            <span class="drag-mark" aria-hidden="true">⠿</span>
+          </button>
+        </div>
+
+        <p class="live-note" id="live-note" role="status" aria-live="polite">היי נועה. היום מתחיל בקצב שלך.</p>
+        <div class="panel-footer">
+          <span class="finished-label" id="look-count">הלוק שלך מתהווה</span>
+          <button class="reset-button" id="reset" type="button" aria-label="התחלה מחדש" title="התחלה מחדש"><span aria-hidden="true">↻</span> מחדש</button>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const portrait = document.querySelector("#portrait");
+    const pimpleLayer = document.querySelector("#pimple-layer");
+    const makeupLayer = document.querySelector("#makeup-layer");
+    const foundationLayer = document.querySelector("#foundation-layer");
+    const countDisplay = document.querySelector("#blemish-count");
+    const countLabel = document.querySelector("#count-label");
+    const liveNote = document.querySelector("#live-note");
+    const lookCount = document.querySelector("#look-count");
+    const productButtons = [...document.querySelectorAll(".product")];
+    const resetButton = document.querySelector("#reset");
+    const pimplePoints = [[245, 194], [350, 205], [206, 347], [432, 357], [252, 375], [389, 398], [299, 464], [350, 332]];
+    const makeup = {
+      blush: { label: "סומק", color: "#d87979", layer: makeupLayer },
+      shadow: { label: "צללית", color: "#927c9c", layer: makeupLayer },
+      lipstick: { label: "שפתון", color: "#c95361", layer: makeupLayer },
+      glow: { label: "היילייטר", color: "#e6bd63", layer: makeupLayer }
+    };
+    let selectedProduct = null;
+    let makeupCount = 0;
+
+    function updatePimpleCount() {
+      const remaining = pimpleLayer.querySelectorAll(".face-pimple").length;
+      countDisplay.textContent = String(remaining);
+      countLabel.textContent = remaining === 1 ? "פצעון קטן נשאר" : "פצעונים קטנים נשארו";
+    }
+
+    function createPimple([x, y], index) {
+      const pimple = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      pimple.classList.add("face-pimple");
+      pimple.setAttribute("role", "button");
+      pimple.setAttribute("tabindex", "0");
+      pimple.setAttribute("aria-label", `פצעון ${index + 1}, לחצי להסרה`);
+  pimple.dataset.pimple = "true";
+      pimple.setAttribute("transform", `translate(${x} ${y})`);
+
+  const size = [6, 8, 7, 5, 9, 6, 7, 5][index];
+  const halo = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+  halo.setAttribute("rx", String(size * 2.1));
+  halo.setAttribute("ry", String(size * 1.7));
+  halo.setAttribute("fill", "url(#blemish-halo)");
+  const bump = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  bump.setAttribute("cx", "-1");
+  bump.setAttribute("cy", "1");
+  bump.setAttribute("r", String(size));
+  bump.setAttribute("fill", "url(#blemish-center)");
+  const glint = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+  glint.setAttribute("cx", String(-size * .28));
+  glint.setAttribute("cy", String(-size * .32));
+  glint.setAttribute("rx", String(size * .25));
+  glint.setAttribute("ry", String(size * .16));
+  glint.setAttribute("fill", "rgba(255,241,220,.68)");
+  pimple.append(halo, bump, glint);
+      pimpleLayer.append(pimple);
+    }
+
+    function pointFromEvent(event) {
+      const point = portrait.createSVGPoint();
+      point.x = event.clientX;
+      point.y = event.clientY;
+      return point.matrixTransform(portrait.getScreenCTM().inverse());
+    }
+
+    function insideFace(point) {
+      return ((point.x - 320) / 150) ** 2 + ((point.y - 323) / 198) ** 2 < 1;
+    }
+
+    function removePimple(pimple) {
+      if (pimple.classList.contains("popping")) return;
+      pimple.classList.add("popping");
+      window.setTimeout(() => {
+        pimple.remove();
+        updatePimpleCount();
+        if (pimpleLayer.children.length === 0) liveNote.textContent = "כל הפצעונים נעלמו. עכשיו אפשר לבחור צבעים.";
+        else liveNote.textContent = "פצעון אחד פחות. ממשיכות בקצב שלך.";
+      }, 220);
+    }
+
+    function selectProduct(name) {
+      if (!makeup[name]) return;
+      selectedProduct = name;
+      productButtons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.product === name)));
+      liveNote.textContent = `${makeup[name].label} נבחר. געי בפנים כדי להניח אותו.`;
+    }
+
+    function addShape(tag, attributes, layer = makeupLayer) {
+      const shape = document.createElementNS("http://www.w3.org/2000/svg", tag);
+      Object.entries(attributes).forEach(([name, value]) => shape.setAttribute(name, String(value)));
+      shape.setAttribute("pointer-events", "none");
+      layer.append(shape);
+      return shape;
+    }
+
+    function applyProduct(name, point) {
+      const product = makeup[name];
+      if (!product || !insideFace(point)) {
+        if (product) liveNote.textContent = "אפשר להניח איפור על הפנים.";
+        return;
+      }
+
+      if (name === "blush") {
+        const cheekX = Math.max(196, Math.min(444, point.x));
+        const cheekY = Math.max(345, Math.min(413, point.y));
+        addShape("ellipse", { cx: cheekX, cy: cheekY, rx: 49, ry: 34, fill: "url(#soft-blush)" });
+      } else if (name === "shadow") {
+        const eyeX = point.x < 320 ? 241 : 399;
+        addShape("ellipse", { cx: eyeX, cy: 292, rx: 42, ry: 22, fill: "url(#soft-shadow)" });
+      } else if (name === "lipstick") {
+        makeupLayer.querySelectorAll("[data-makeup=" + name + "]").forEach(shape => shape.remove());
+        const lips = addShape("path", { d: "M276 414 C292 402 307 405 320 412 C333 405 348 402 364 414 C350 438 334 444 320 434 C306 444 290 438 276 414Z", fill: product.color, opacity: .82 });
+        lips.dataset.makeup = name;
+      } else if (name === "glow") {
+        addShape("ellipse", { cx: point.x, cy: point.y, rx: 28, ry: 19, fill: "url(#soft-glow)" });
+      }
+
+      makeupCount += 1;
+      lookCount.textContent = `${makeupCount} נגיעות צבע`;
+      liveNote.textContent = `${product.label} הונח. אפשר להוסיף עוד.`;
+    }
+
+    pimplePoints.forEach(createPimple);
+    updatePimpleCount();
+
+    pimpleLayer.addEventListener("click", event => {
+      const pimple = event.target.closest(".face-pimple");
+      if (pimple) removePimple(pimple);
+    });
+
+    pimpleLayer.addEventListener("keydown", event => {
+      if (event.target.matches(".face-pimple") && (event.key === "Enter" || event.key === " ")) {
+        event.preventDefault();
+        removePimple(event.target);
+      }
+    });
+
+    portrait.addEventListener("click", event => {
+      if (event.target.closest(".face-pimple") || !selectedProduct) return;
+      applyProduct(selectedProduct, pointFromEvent(event));
+    });
+
+    portrait.addEventListener("dragover", event => event.preventDefault());
+    portrait.addEventListener("drop", event => {
+      event.preventDefault();
+      const productName = event.dataTransfer.getData("text/plain");
+      if (!makeup[productName]) return;
+      selectProduct(productName);
+      applyProduct(productName, pointFromEvent(event));
+    });
+
+    productButtons.forEach(button => {
+      button.addEventListener("click", () => selectProduct(button.dataset.product));
+      button.addEventListener("dragstart", event => {
+        event.dataTransfer.setData("text/plain", button.dataset.product);
+        event.dataTransfer.effectAllowed = "copy";
+        selectProduct(button.dataset.product);
+      });
+    });
+
+    resetButton.addEventListener("click", () => {
+      pimpleLayer.replaceChildren();
+      makeupLayer.replaceChildren();
+      foundationLayer.replaceChildren();
+      pimplePoints.forEach(createPimple);
+      makeupCount = 0;
+      selectedProduct = null;
+      productButtons.forEach(button => button.setAttribute("aria-pressed", "false"));
+      lookCount.textContent = "הלוק שלך מתהווה";
+      liveNote.textContent = "התחלנו מחדש. איך ייראה הבוקר הזה?";
+      updatePimpleCount();
+    });
+  </script>
+</body>
+</html>

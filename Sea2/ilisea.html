@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#d8f1ec">
+	<title>ilisea | רגע של טוב</title>
+	<style>
+		:root {
+			color-scheme: light;
+			font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+			color: #174c4a;
+			background: #d8f1ec;
+			font-synthesis: none;
+			text-rendering: optimizeLegibility;
+			-webkit-font-smoothing: antialiased;
+		}
+
+		* { box-sizing: border-box; }
+
+		body {
+			min-width: 320px;
+			min-height: 100svh;
+			margin: 0;
+			overflow: hidden;
+			background:
+				radial-gradient(ellipse at 18% 8%, rgba(255, 255, 255, .8), transparent 30%),
+				linear-gradient(180deg, #d8f1ec, #bde8e3 55%, #94d4d0);
+		}
+
+		.scene {
+			position: relative;
+			width: min(100%, 1440px);
+			height: 100svh;
+			min-height: 560px;
+			margin: 0 auto;
+			overflow: hidden;
+			isolation: isolate;
+		}
+
+		.sun {
+			position: absolute;
+			top: 17%;
+			left: 12%;
+			width: clamp(72px, 10vw, 132px);
+			aspect-ratio: 1;
+			border-radius: 50%;
+			background: #ffd886;
+			box-shadow: 0 0 0 18px rgba(255, 216, 134, .15), 0 0 70px rgba(255, 216, 134, .35);
+		}
+
+		.cloud {
+			position: absolute;
+			top: 26%;
+			right: 13%;
+			width: 96px;
+			height: 23px;
+			border-radius: 50px;
+			background: rgba(255, 255, 255, .44);
+		}
+
+		.cloud::before,
+		.cloud::after {
+			position: absolute;
+			bottom: 5px;
+			border-radius: 50%;
+			background: inherit;
+			content: "";
+		}
+
+		.cloud::before { right: 19px; width: 37px; height: 37px; }
+		.cloud::after { right: 47px; width: 27px; height: 27px; }
+
+		.topbar {
+			position: absolute;
+			z-index: 3;
+			top: clamp(22px, 5vh, 48px);
+			right: clamp(22px, 6vw, 84px);
+			left: clamp(22px, 6vw, 84px);
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 18px;
+		}
+
+		.brand { margin: 0; }
+
+		.brand-name {
+			display: block;
+			direction: ltr;
+			color: #174c4a;
+			font-family: Georgia, "Times New Roman", serif;
+			font-size: clamp(40px, 6vw, 68px);
+			font-weight: 400;
+			line-height: .9;
+		}
+
+		.brand-note {
+			display: block;
+			margin-top: 12px;
+			color: #4b7772;
+			font-size: 14px;
+		}
+
+		.counter {
+			margin-top: 7px;
+			padding: 10px 14px;
+			border: 1px solid rgba(23, 76, 74, .15);
+			border-radius: 999px;
+			color: #285d59;
+			background: rgba(255, 255, 255, .4);
+			font-size: 13px;
+			white-space: nowrap;
+		}
+
+		.prompt {
+			position: absolute;
+			z-index: 2;
+			top: 25%;
+			right: 0;
+			left: 0;
+			margin: 0;
+			padding: 0 18px;
+			color: #39716c;
+			font-size: clamp(15px, 2vw, 18px);
+			text-align: center;
+		}
+
+		.balloon-field {
+			position: absolute;
+			z-index: 2;
+			inset: 29% 7% 25%;
+		}
+
+		.balloon {
+			position: absolute;
+			top: var(--y);
+			left: var(--x);
+			display: grid;
+			width: 76px;
+			height: 116px;
+			place-items: start center;
+			padding: 0;
+			border: 0;
+			background: transparent;
+			cursor: pointer;
+			-webkit-tap-highlight-color: transparent;
+		}
+
+		.balloon-art {
+			position: relative;
+			display: block;
+			width: 76px;
+			height: 116px;
+			animation: float var(--float-time) ease-in-out var(--float-delay) infinite;
+		}
+
+		.balloon-shell {
+			position: relative;
+			display: block;
+			width: 58px;
+			height: 73px;
+			border-radius: 50% 50% 46% 46%;
+			background: var(--color);
+			box-shadow: inset -9px -8px 0 rgba(31, 65, 62, .1), inset 7px 8px 0 rgba(255, 255, 255, .27), 0 9px 20px rgba(42, 91, 87, .1);
+			transition: filter .2s ease;
+		}
+
+		.balloon-shell::before {
+			position: absolute;
+			top: 13px;
+			left: 12px;
+			width: 9px;
+			height: 24px;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, .65);
+			content: "";
+			transform: rotate(18deg);
+		}
+
+		.balloon-shell::after {
+			position: absolute;
+			bottom: -6px;
+			left: 24px;
+			width: 11px;
+			height: 11px;
+			background: var(--color);
+			content: "";
+			clip-path: polygon(0 0, 100% 0, 50% 100%);
+		}
+
+		.balloon-string {
+			position: absolute;
+			top: 78px;
+			left: 37px;
+			width: 1px;
+			height: 34px;
+			background: rgba(49, 105, 99, .48);
+		}
+
+		.balloon:hover .balloon-shell,
+		.balloon:focus-visible .balloon-shell { filter: brightness(1.08) saturate(1.1); }
+
+		.balloon:focus-visible {
+			outline: 2px solid #174c4a;
+			outline-offset: 3px;
+			border-radius: 40px;
+		}
+
+		.balloon.is-popping .balloon-art { animation: pop .24s ease-in forwards; }
+
+		.compliment {
+			position: absolute;
+			z-index: 3;
+			right: 18px;
+			bottom: 18%;
+			left: 18px;
+			min-height: 66px;
+			margin: 0;
+			color: #174c4a;
+			font-family: Georgia, "Times New Roman", serif;
+			font-size: clamp(22px, 3.2vw, 34px);
+			text-align: center;
+			text-wrap: balance;
+			text-shadow: 0 1px 14px rgba(255, 255, 255, .58);
+			animation: reveal .5s ease both;
+		}
+
+		.sea {
+			position: absolute;
+			z-index: 1;
+			right: -7%;
+			bottom: -7%;
+			left: -7%;
+			height: 23%;
+			border-radius: 50% 50% 0 0 / 25% 25% 0 0;
+			background: linear-gradient(180deg, #66b9b4, #319b9b);
+		}
+
+		.sea::before,
+		.sea::after {
+			position: absolute;
+			right: -3%;
+			left: -3%;
+			height: 60%;
+			border-top: 1px solid rgba(231, 255, 247, .48);
+			border-radius: 50%;
+			content: "";
+		}
+
+		.sea::before { top: 15%; transform: rotate(-2deg); }
+		.sea::after { top: 29%; transform: rotate(2deg); opacity: .55; }
+
+		@keyframes float {
+			0%, 100% { translate: 0 0; rotate: -3deg; }
+			50% { translate: 0 -13px; rotate: 3deg; }
+		}
+
+		@keyframes pop {
+			to { opacity: 0; scale: 1.55; filter: blur(5px); }
+		}
+
+		@keyframes reveal {
+			from { opacity: 0; translate: 0 8px; }
+			to { opacity: 1; translate: 0 0; }
+		}
+
+		@media (max-width: 560px) {
+			.scene { min-height: 540px; }
+			.topbar { top: 24px; }
+			.brand-note { max-width: 190px; font-size: 12px; }
+			.counter { margin-top: 2px; padding: 8px 10px; font-size: 11px; }
+			.prompt { top: 23%; }
+			.balloon-field { inset: 29% 3% 28%; }
+			.balloon { width: 62px; height: 102px; }
+			.balloon-art { width: 62px; height: 102px; }
+			.balloon-shell { width: 48px; height: 62px; }
+			.balloon-shell::before { top: 11px; left: 10px; width: 7px; height: 19px; }
+			.balloon-shell::after { left: 20px; }
+			.balloon-string { top: 67px; left: 30px; height: 32px; }
+			.compliment { bottom: 18%; min-height: 74px; font-size: 23px; }
+			.sea { height: 21%; }
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			*, *::before, *::after {
+				animation-duration: .01ms !important;
+				animation-iteration-count: 1 !important;
+				transition-duration: .01ms !important;
+			}
+		}
+	</style>
+</head>
+<body>
+	<main class="scene" aria-label="משחק הבלונים של ilisea">
+		<div class="sun" aria-hidden="true"></div>
+		<div class="cloud" aria-hidden="true"></div>
+
+		<header class="topbar">
+			<h1 class="brand">
+				<span class="brand-name">ilisea</span>
+				<span class="brand-note">ים קטן של מילים טובות</span>
+			</h1>
+			<div class="counter" id="counter" aria-live="polite">0 מתוך 8 בלונים</div>
+		</header>
+
+		<p class="prompt">המשחק כבר כאן. כל בלון מחזיק מילה טובה.</p>
+		<section class="balloon-field" id="balloon-field" aria-label="בלונים ללחיצה"></section>
+		<p class="compliment" id="compliment" aria-live="polite" aria-atomic="true">איזה יופי שאת כאן. יש בך אור מיוחד.</p>
+		<div class="sea" aria-hidden="true"></div>
+	</main>
+
+	<script>
+		const compliments = [
+			"יש בך אור שאי אפשר לפספס.",
+			"העולם קצת יותר טוב בזכותך.",
+			"יש לך דרך מיוחדת לראות את הדברים.",
+			"מגיע לך רגע של שלווה ושמחה.",
+			"החיוך שלך יכול לשנות יום שלם.",
+			"יש בך יותר כוח ממה שנדמה לך.",
+			"הנוכחות שלך עושה טוב לסביבה.",
+			"איזה מזל שיש אותך בעולם.",
+			"מותר לך להיות גאה בעצמך.",
+			"דברים יפים קורים גם בזכותך.",
+			"הדרך שלך היא שלך, וזה יפה.",
+			"מגיע לך להרגיש גאה במה שעשית."
+		];
+		const colors = ["#ef8175", "#f2b64c", "#68b7a5", "#8e9fd2", "#e88fb0", "#73a9d2", "#d3a66a", "#88ad70"];
+		const positions = [[10, 5], [24, 40], [38, 12], [51, 49], [65, 8], [78, 38], [82, 15], [3, 54]];
+		const balloonField = document.querySelector("#balloon-field");
+		const counter = document.querySelector("#counter");
+		const compliment = document.querySelector("#compliment");
+		let poppedCount = 0;
+		let messageQueue = [];
+		let restarting = false;
+
+		function shuffled(items) {
+			const result = [...items];
+			for (let index = result.length - 1; index > 0; index--) {
+				const otherIndex = Math.floor(Math.random() * (index + 1));
+				[result[index], result[otherIndex]] = [result[otherIndex], result[index]];
+			}
+			return result;
+		}
+
+		function showCompliment(message) {
+			compliment.textContent = message;
+			compliment.classList.remove("reveal");
+			void compliment.offsetWidth;
+			compliment.classList.add("reveal");
+		}
+
+		function buildRound() {
+			balloonField.replaceChildren();
+			messageQueue = shuffled(compliments);
+			positions.forEach(([x, y], index) => {
+				const balloon = document.createElement("button");
+				balloon.type = "button";
+				balloon.className = "balloon";
+				balloon.style.setProperty("--x", `${x}%`);
+				balloon.style.setProperty("--y", `${y}%`);
+				balloon.style.setProperty("--color", colors[index]);
+				balloon.style.setProperty("--float-time", `${3.4 + (index % 4) * .45}s`);
+				balloon.style.setProperty("--float-delay", `${-index * .38}s`);
+				balloon.setAttribute("aria-label", `ללחוץ על בלון ${index + 1} ולקבל מילה טובה`);
+
+				const art = document.createElement("span");
+				art.className = "balloon-art";
+				art.setAttribute("aria-hidden", "true");
+				const shell = document.createElement("span");
+				shell.className = "balloon-shell";
+				const string = document.createElement("span");
+				string.className = "balloon-string";
+				art.append(shell, string);
+				balloon.append(art);
+				balloon.addEventListener("click", () => {
+					if (balloon.disabled || restarting) return;
+					balloon.disabled = true;
+					balloon.classList.add("is-popping");
+					poppedCount += 1;
+					counter.textContent = `${poppedCount} מתוך ${positions.length} בלונים`;
+					showCompliment(messageQueue.pop());
+					window.setTimeout(() => balloon.remove(), 250);
+
+					if (poppedCount === positions.length) {
+						restarting = true;
+						window.setTimeout(() => {
+							poppedCount = 0;
+							restarting = false;
+							buildRound();
+							showCompliment("איזה יופי. הסיבוב הבא כבר מוכן.");
+						}, 1500);
+					}
+				});
+				balloonField.append(balloon);
+			});
+			counter.textContent = `${poppedCount} מתוך ${positions.length} בלונים`;
+		}
+
+		buildRound();
+	</script>
+</body>
+</html>

@@ -1,20 +1,13 @@
-# Sea2
+# ilisea
 
-A small Python desktop GUI with three buttons that display and speak `Hello`.
-Choose a childlike, woman, or man voice.
+A small JavaScript balloon game with kind messages.
 
-## Run
+Open `ilisea.html` in a web browser to play. The game and its first message are visible immediately; the balloons remain clickable.
 
-Install the speech dependency once from this folder:
+## Morning Routine
 
-```powershell
-python -m pip install -r requirements.txt
-```
+Open `morning-routine.html`. Click the facial spots to remove them, then drag a makeup item onto the face or select an item and tap the face. Choose `מחדש` to reset.
 
-Then start the app:
+## ASMR Video
 
-```powershell
-python main.py
-```
-
-The app uses Tkinter for its window, and online neural speech for the three voices. An internet connection is required to generate audio; the text `Hello` is sent to Microsoft's speech service.
+Open `asmr.html` and choose `גלי ים`, `סקווישי וסליים`, or `דמפלינג`. Press the slime or dumpling to play its squish sound; start recording to save a 24-second WebM clip.
